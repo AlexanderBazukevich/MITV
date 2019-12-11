@@ -18,8 +18,21 @@
     }
 
     &__title {
+        position: relative;
         margin: 50px 0 0 0;
         font-size: 36px;
+
+        &:before {
+            position: absolute;
+            right: calc(100% + 52px);
+            top: 5px;
+            display: block;
+            content: "";
+            height: 93px;
+            width: 93px;
+            background-color: #ffffff;
+            border-radius: 100%;
+        }
     }
 
     &__date,

@@ -6,12 +6,23 @@
     background-color: #111113;
 
     &__wrapper {
+        position: relative;
         display: flex;
         flex-wrap: wrap;
-        margin: 0 auto;
+        align-items: center;
+        height: 125px;
+        margin: auto;
         width: calc(100% - 500px);
-    }
 
-    &__logo {
+        &:before {
+            position: absolute;
+            top: 0;
+            display: block;
+            content: "";
+            height: 1px;
+            width: 100%;
+            background-color: #ffffff;
+            opacity: .5;
+        }
     }
 }
