@@ -7,6 +7,23 @@
     box-sizing: border-box;
     background-color: #000000;
 
+    &:nth-child(2) {
+        position: relative;
+        background-color: #111113;
+    }
+
+    &__overflow {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        background-image: url(../assets/interface/web_1.png);
+        background-repeat: no-repeat;
+        background-position: right top;
+        opacity: .4;
+    }
+
     &_big {
         height: 920px;
         width: 100%;
@@ -22,6 +39,7 @@
         font-size: 72px;
 
         &_big {
+            position: relative;
             font-size: 100px;
         }
     }
@@ -29,4 +47,5 @@
     &__description {
         font-size: 28px;
     }
+
 }

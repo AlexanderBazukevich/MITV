@@ -2,13 +2,27 @@
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     margin: 0 auto 100px;
     height: 880px;
     width: calc(100% - 200px);
     background-color: #f8323f;
 
     &__title {
+        width: 54%;
         color: #fff;
         font-size: 383px;
+        font-weight: bold;
+        line-height: 1;
+        letter-spacing: 0.06em;
+
+        &_front {
+            z-index: 1;
+        }
+    }
+
+    &__image {
+        position: absolute;
+        left: -100px;
     }
 }
