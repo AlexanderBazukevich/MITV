@@ -12,6 +12,12 @@
         background-color: #111113;
     }
 
+    &_big {
+        position: relative;
+        height: 920px;
+        width: 100%;
+    }
+
     &__overflow {
         position: absolute;
         top: 0;
@@ -24,9 +30,15 @@
         opacity: .4;
     }
 
-    &_big {
-        height: 920px;
-        width: 100%;
+    &__play {
+        position: absolute;
+        display: block;
+        top: calc(50% - 100px);
+        left: calc(50% - 100px);
+        height: 200px;
+        width: 200px;
+        border: solid #fff 3px;
+        border-radius: 100%;
     }
 
     &__title,
@@ -41,6 +53,8 @@
         &_big {
             position: relative;
             font-size: 100px;
+            padding-left: 170px;
+            text-align: left;
         }
     }
 
