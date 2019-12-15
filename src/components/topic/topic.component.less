@@ -1,14 +1,19 @@
 .topic {
+    display: inline-block;
     height: 410px;
-    width: calc(100% / 2);
-    box-sizing: border-box;;
+    width: 50%;
+    font-size: 1rem;
 
-    &:nth-child(n+2) {
-        padding: 0 250px 0 200px;
+    &:nth-child(2n + 1) {
+        width: calc(50% - 340px);
+        margin-left: -100px;
+        padding: 0 51px 0 389px;
     }
     
-    &:nth-child(2n-1) {
-        padding: 0 50px 0 380px;
+    &:nth-child(2n + 2) {
+        width: calc(50% - 340px);
+        margin-right: -100px;
+        padding: 0 240px 0 200px;
     }
 
     &__title,
@@ -25,7 +30,7 @@
         &:before {
             position: absolute;
             right: calc(100% + 52px);
-            top: 5px;
+            top: 10px;
             display: block;
             content: "";
             height: 93px;
