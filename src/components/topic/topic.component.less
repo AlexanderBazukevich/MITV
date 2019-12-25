@@ -1,4 +1,5 @@
 .topic {
+    position: relative;
     display: inline-block;
     height: 410px;
     width: 50%;
@@ -14,6 +15,22 @@
         width: calc(50% - 340px);
         margin-right: -100px;
         padding: 0 240px 0 200px;
+    }
+
+    &:hover {
+        background-color: #000000;
+
+        &:nth-child(2) {
+            background-image: url(../assets/interface/hover_1.png);
+            background-position: center right;
+            background-repeat: no-repeat;
+        }
+
+        &:nth-child(4) {
+            background-image: url(../assets/interface/hover_2.png);
+            background-position: center right;
+            background-repeat: no-repeat;
+        }
     }
 
     &__title,
@@ -35,7 +52,11 @@
             content: "";
             height: 93px;
             width: 93px;
-            background-color: #ffffff;
+            // background-color: #ffffff;
+            background-image: url(../assets/images/singer.png);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 100%;
             border-radius: 100%;
         }
     }
@@ -43,9 +64,5 @@
     &__date,
     &__text {
         font-size: 18px;
-    }
-
-    &:hover {
-        background-color: #000000;
     }
 }

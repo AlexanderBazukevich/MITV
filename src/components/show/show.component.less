@@ -39,6 +39,30 @@
         width: 200px;
         border: solid #fff 3px;
         border-radius: 100%;
+        
+        &::before {
+            position: absolute;
+            display: block;
+            content: "";
+            border-bottom: 30px solid transparent;
+            border-left: 50px solid white;
+            border-top: 30px solid transparent;
+            top: calc(50% - 30px);
+            left: calc(50% - 20px);
+        }
+
+        &::after {
+            position: absolute;
+            display: block;
+            content: "";
+            border-bottom: 26px solid transparent;
+            border-left: 44px solid black;
+            border-top: 26px solid transparent;
+            top: calc(50% - 26px);
+            left: calc(50% - 18px);
+        }
+
+
     }
 
     &__title,
@@ -61,5 +85,4 @@
     &__description {
         font-size: 28px;
     }
-
 }

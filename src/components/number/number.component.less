@@ -7,10 +7,24 @@
     width: 100px;
 
     &__item {
+        display: flex;
         margin: 15px 0;
         color: #000;
         font-size: 14px;
         //mixins
-        .link()
+        .link();
+
+        &:hover {
+            &:after {
+                position: absolute;
+                align-self: center;
+                right: 0;
+                content:"";
+                display: block;
+                height: 6px;
+                width: 25px;
+                background-color: #f8323f;
+            }
+        }
     }
 }
