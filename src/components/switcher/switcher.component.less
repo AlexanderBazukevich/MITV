@@ -11,19 +11,20 @@
         margin: 19px 0;
         color: #000;
         font-size: 14px;
+
         //mixins
         .link();
 
         &:hover {
             &:after {
-                position: absolute;
                 align-self: center;
                 right: 0;
-                content:"";
-                display: block;
                 height: 5px;
                 width: 20px;
-                background-color: #f8323f;
+                background-color: #f93541;
+
+                //mixins 
+                .dash();
             }
         }
     }

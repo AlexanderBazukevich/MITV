@@ -5,12 +5,24 @@
     background-color: #f62335;
 
     &__title {
+        position: relative;
         display: inline-block;
         max-width: 25%;
         margin: 80px 0px 72px 140px;
         color:#ffffff;
         font-size: 100px;
         line-height: 1.1em;
+
+        &:after {
+            right: 40px;
+            bottom: 40px;
+            height: 14px;
+            width: 85px;
+            background-color: #ffffff;
+
+            //mixins
+            .dash();
+        }
     }
     &__image {
         position: absolute;
