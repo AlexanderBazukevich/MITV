@@ -29,15 +29,21 @@ const topics = [
     }
 ]
 
-var topic = document.querySelectorAll('.topic');
+const container = document.querySelector('.news__wrapper');
+let html = "";
+topics.forEach( (item) => {
+    html += `
+    <div class="topic">
+        <div class="topic__title">
+            <div class="author topic__author">
+                <img class="author__image" src=${item.picture}>
+            </div>
+            ${item.title}
+        </div>
+        <p class="topic__date">${item.date}</p>
+        <p class="topic__text">${item.content}</p>
+    </div>
+    `
+})
 
-function createTopic(target, source) {
-    target.querySelector('.title__text').textContent = source.title;
-    target.querySelector('.topic__date').textContent = source.date;
-    target.querySelector('.topic__text').textContent = source.content;
-    target.querySelector('.title__image').src = source.picture;
-}
-
-for (var i = 0; i < topics.length; i++) {
-    createTopic(topic[i], topics[i]);
-}
+container.innerHTML = html;
