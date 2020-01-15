@@ -36,6 +36,7 @@ const videos = [
     }
 ]
 
+const wrapper = document.querySelector('.video');
 const videoItems = document.querySelectorAll('.video__item');
 let html1 = "";
 for (let i = 0; i <= videos.length - 1; i++) {
@@ -65,27 +66,102 @@ function hideVideos() {
     videoItems.forEach( video__item => {video__item.classList.add('video__item_hidden')});
 }
 
-function changeState() {
-    // console.log(this);
-    // console.log(cont[i].classList);
+function activateCurrent(e) {
+    e.classList.add('video__item_active');
+    e.classList.remove('video__item_hidden', 'video__item_left', 'video__item_right');
+    e.classList.add('video__item_middle');
+    e.querySelector('.button').classList.remove('video__button_hidden');
+    e.querySelector('.video__type').classList.add('video__type_red');
+}
 
-    if (this.classList == 'video__item') {
+function deactivateNext(e) {
+    e.nextElementSibling.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
+    e.nextElementSibling.classList.add('video__item_right');
+    e.nextElementSibling.querySelector('.button').classList.add('video__button_hidden');
+    e.nextElementSibling.querySelector('.video__type').classList.remove('video__type_red');
+}
+
+function deactivatePrevious(e) {
+    e.previousElementSibling.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
+    e.previousElementSibling.classList.add('video__item_left');
+    e.previousElementSibling.querySelector('.button').classList.add('video__button_hidden');
+    e.previousElementSibling.querySelector('.video__type').classList.remove('video__type_red');
+}
+
+function moveFirst(e) {
+    e.firstElementChild.nextElementSibling.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
+    e.firstElementChild.nextElementSibling.classList.add('video__item_right');
+    e.firstElementChild.nextElementSibling.querySelector('.video__type').classList.remove('video__type_red');
+    e.firstElementChild.nextElementSibling.querySelector('.button').classList.add('video__button_hidden');
+    e.firstElementChild.nextElementSibling.classList.add('video__item_right');
+}
+
+function moveLast(e) {
+    e.lastElementChild.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
+    e.lastElementChild.classList.add('video__item_left');
+    e.lastElementChild.querySelector('.video__type').classList.remove('video__type_red');
+    e.lastElementChild.querySelector('.button').classList.add('video__button_hidden');
+    e.lastElementChild.classList.add('video__item_left');
+}
+
+function changeState() {
+
+    if (this.classList == 'video__item video__item_right') {
+
+        if (this.nextElementSibling == null) {
+            wrapper.lastElementChild.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
+            wrapper.firstElementChild.nextElementSibling.querySelector('.video__image').classList.add('video__image_wide');
+            wrapper.classList.remove('video_left');
+        } else {
+            this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
+            this.previousElementSibling.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
+            this.nextElementSibling.querySelector('.video__image').classList.add('video__image_wide');
+            this.parentNode.classList.remove('video_left');
+
+        }
+    }
+
+    if (this.classList == 'video__item video__item_left') {
+
+        if (this.previousElementSibling.previousElementSibling == null) {
+            wrapper.firstElementChild.nextElementSibling.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
+            wrapper.lastElementChild.querySelector('.video__image').classList.add('video__image_wide', 'video__image_left');
+            wrapper.classList.add('video_left');
+        } else {
+            this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
+            this.nextElementSibling.querySelector('.video__image').classList.remove('video__image_wide');
+            this.previousElementSibling.querySelector('.video__image').classList.add('video__image_wide', 'video__image_left');
+            this.parentNode.classList.add('video_left');
+
+        }
+    }
+
+    if (this.classList == 'video__item' || this.classList == 'video__item video__item_middle' || this.classList == 'video__item video__item_right' || this.classList == 'video__item video__item_left') {
         hideVideos();
 
-        this.classList.add('video__item_active');
-        this.classList.remove('video__item_hidden');
-        this.querySelector('.button').classList.remove('video__button_hidden');
-        this.querySelector('.video__type').classList.add('video__type_red');
+        if (this.nextElementSibling == null) {
 
-        this.nextElementSibling.classList.remove('video__item_active');
-        this.nextElementSibling.classList.remove('video__item_hidden');
-        this.nextElementSibling.querySelector('.button').classList.add('video__button_hidden');
-        this.nextElementSibling.querySelector('.video__type').classList.remove('video__type_red');
-        
-        this.previousElementSibling.classList.remove('video__item_active');
-        this.previousElementSibling.classList.remove('video__item_hidden');
-        this.previousElementSibling.querySelector('.button').classList.add('video__button_hidden');
-        this.previousElementSibling.querySelector('.video__type').classList.remove('video__type_red');
+            activateCurrent(this);
+            deactivatePrevious(this);
+
+            moveFirst(wrapper);
+
+            return;
+        }
+
+        if (this.previousElementSibling.previousElementSibling == null) {
+
+            activateCurrent(this);
+            deactivateNext(this);
+
+            moveLast(wrapper);
+
+            return;
+        }
+
+        activateCurrent(this);
+        deactivatePrevious(this);
+        deactivateNext(this)
     }
 }
 
