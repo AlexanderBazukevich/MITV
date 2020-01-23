@@ -1,8 +1,18 @@
 .channels {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     width: calc(100% - 190px);
     margin: 95px auto 100px;
+
+    &_movable {
+        flex-wrap: nowrap;
+        height: 700px;
+        width: calc(100% - 200px);
+        background-color: #ffffff;
+        box-shadow: 0 10px 100px #d3d3d3;
+        box-sizing: border-box;
+    }
 
     &__button {
         margin: 57px auto 0;
