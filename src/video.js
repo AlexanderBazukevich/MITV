@@ -1,34 +1,34 @@
 const videos = [
     {
-        data_id: "1",
+        data_id: "0",
         title: "Behind the scenes with songwriters",
         picture: "./assets/images/vid_1.jpg",
         content: "Voluptate elit elit ipsum velit ea ipsum consequat in anim eiusmod. Veniam cupidatat consequat laboris commodo qui amet ea aliquip laborum. Anim Lorem eu voluptate eiusmod cillum reprehenderit reprehenderit sint aliqua id. Mollit culpa occaecat ea labore pariatur laboris tempor aute est excepteur sunt. Magna in eiusmod ex eiusmod reprehenderit et do quis pariatur nisi. Laboris laboris id eu amet elit elit excepteur commodo commodo eiusmod ipsum ullamco.",
         type: "Music"
     },
     {
-        data_id: "2",
+        data_id: "1",
         title: "Dress like you really mean it",
         picture: "./assets/images/vid_2.jpg",
         content: "Aute proident adipisicing Lorem id duis fugiat. Reprehenderit eiusmod ullamco elit sit fugiat ex non deserunt. Proident tempor irure qui dolore Lorem minim nulla aute Lorem tempor non anim.",
         type: "Fashion"
     },
     {
-        data_id: "3",
+        data_id: "2",
         title: "Great goals and celebrations",
         picture: "./assets/images/vid_3.jpg",
         content: "Ullamco occaecat reprehenderit dolore. Excepteur sint id sint dolore dolore nulla ex reprehenderit nostrud. Officia ea labore cupidatat officia id eu labore qui ullamco exercitation do ut consequat. Eu commodo exercitation in eu irure.",
         type: "Sport"
     },
     {
-        data_id: "4",
+        data_id: "3",
         title: "Cosmic gate - new album",
         picture: "./assets/images/vid_4.jpg",
         content: "Ullamco ut voluptate minim Lorem. reprehenderit anim sunt pariatur. Lorem est elit pariatur sint duis voluptate elit eiusmod. Deserunt proident excepteur consequat non. Adipisicing dolore nulla mollit esse Lorem consectetur cupidatat ea aliqua nisi amet incididunt.",
         type: "Trance"
     },
     {
-        data_id: "5",
+        data_id: "4",
         title: "Push de tempo, ya mamaaa!",
         picture: "./assets/images/vid_5.jpg",
         content: "Nostrud dolor ut id ex nisi officia aliquip cillum aliqua reprehenderit anim sunt pariatur. Lorem est elit pariatur sint duis voluptate elit eiusmod. Deserunt proident excepteur consequat non. Adipisicing dolore nulla mollit esse Lorem consectetur cupidatat ea aliqua nisi amet incididunt.",
@@ -38,11 +38,14 @@ const videos = [
 
 const videoContainer = document.querySelector('.video');
 let videoHtml = "";
+
 let currentIndex = 1;
+let activeIndex = currentIndex;
+// console.log(activeIndex);
 
 videos.forEach ( (item) => {
     videoHtml += `
-    <div class = "video__item" data_id = "${item.data_id}">
+    <div class = "video__item video__item_hidden" data_id = "${item.data_id}">
         <div class="video__image"><img class="video__picture" src=${item.picture}></div>
         <h2 class="video__title video__title_small">${item.title}</h2>
         <p class="video__type">${item.type}</p>
@@ -56,58 +59,129 @@ videoContainer.innerHTML += videoHtml;
 
 const videoItems = document.querySelectorAll('.video__item');
 activate(videoItems[currentIndex]);
+moveToLeft(videoItems[currentIndex - 1])
+moveToRight(videoItems[currentIndex + 1]);
 
-videoContainer.addEventListener('click', (event) => {getCurrentIndex(event)});
+videoContainer.addEventListener('click', (event) => {
+    hideAll()
+    getCurrentIndex(event);
+    getActiveIndex();
+
+    if (currentIndex > activeIndex) {
+        // console.log('Right click');
+        if (currentIndex == (videoItems.length - 1)) {
+            deactivate(videoItems[currentIndex - 1]);
+            activateLast(videoItems[currentIndex], videoItems[0]);
+            moveToLeft(videoItems[currentIndex - 1]);
+            return;
+        }
+
+        deactivate(videoItems[currentIndex - 1]);
+        activate(videoItems[currentIndex]);
+        moveToLeft(videoItems[currentIndex - 1]);
+        moveToRight(videoItems[currentIndex + 1]);
+
+    }   else if (currentIndex < activeIndex) {
+            // console.log('Left click');
+            if (currentIndex == 0) {
+                deactivate(videoItems[currentIndex + 1]);
+                activateFirst(videoItems[currentIndex], videoItems[videoItems.length - 1]);
+                moveToRight(videoItems[currentIndex + 1]);
+                return;
+            }
+
+            deactivate(videoItems[currentIndex + 1]);
+            activate(videoItems[currentIndex]);
+            moveToLeft(videoItems[currentIndex - 1]);
+            moveToRight(videoItems[currentIndex + 1]);
+
+        }   else {
+            activate(videoItems[currentIndex]);
+            moveToLeft(videoItems[currentIndex - 1]);
+            moveToRight(videoItems[currentIndex + 1]);
+                console.log('Center');
+            }
+});
 
 function getCurrentIndex(event) {
     let e = event.target;
-    let index = 0;
 
     if (e.classList == 'video' || (e.parentElement.classList == 'video' && e.getAttribute('data_id') == null)) {
         return;
     }
 
     while (e.parentElement.classList != 'video') {
+
         e = e.parentElement;
 
         if (e.parentElement.classList == 'video') {
-            index = Number(e.getAttribute('data_id'));
-            return index;
+            currentIndex = Number(e.getAttribute('data_id'));
+            return;
         }
     }
-    index = Number(e.getAttribute('data_id'));
-    return index;
+
+    currentIndex = Number(e.getAttribute('data_id'));
+    return;
+}
+
+function getActiveIndex() {
+    videoItems.forEach( (item) => {
+        if (item.classList == 'video__item video__item_active') {
+            activeIndex = Number(item.getAttribute('data_id'));
+            return;
+        }
+    } )
 }
 
 function activate(e) {
-    e.classList.add('video__item_active');
-    // e.classList.add('video__item_middle');
+    showNeighbours(e.previousElementSibling, e.nextElementSibling);
+    e.classList.add('video__item_active', 'video__item_middle');
+    e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.add('video__type_red');
     e.querySelector('.video__button').classList.remove('video__button_hidden');
 }
 
 function deactivate(e) {
-    e.classList.remove('video__item_active');
+    e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.remove('video__type_red');
     e.querySelector('.video__button').classList.add('video__button_hidden');
 }
 
-function moveRight() {
+function showNeighbours(left, right) {
+    left.classList.remove('video__item_hidden');
+    right.classList.remove('video__item_hidden');
+}
+
+function hideAll() {
+    videoItems.forEach( video__item => {
+        video__item.classList.add('video__item_hidden');
+        video__item.classList.remove('video__item_active', 'video__item_middle', 'video__item_right', 'video__item_left');
+    });
+}
+
+function moveToRight(e) {
+    deactivate(e);
     e.classList.add('video__item_right');
 }
 
-function moveLeft() {
-
+function moveToLeft(e) {
+    deactivate(e);
+    e.classList.add('video__item_left');
 }
 
-function moveFirst() {
-
+function activateFirst(e, last) {
+    e.classList.add('video__item_active', 'video__item_middle');
+    e.classList.remove('video__item_hidden');
+    last.classList.add('video__item_left');
+    last.classList.remove('video__item_hidden');
 }
 
-function moveLast() {
-
+function activateLast(e, first) {
+    e.classList.add('video__item_active', 'video__item_middle');
+    e.classList.remove('video__item_hidden');
+    first.classList.add('video__item_right');
+    first.classList.remove('video__item_hidden');
 }
-
 
 // function hideVideos() {
 //     videoItems.forEach( video__item => {
