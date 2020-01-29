@@ -134,7 +134,6 @@ function getActiveIndex() {
 }
 
 function activate(e) {
-    showNeighbours(e.previousElementSibling, e.nextElementSibling);
     e.classList.add('video__item_active', 'video__item_middle');
     e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.add('video__type_red');
@@ -145,11 +144,6 @@ function deactivate(e) {
     e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.remove('video__type_red');
     e.querySelector('.video__button').classList.add('video__button_hidden');
-}
-
-function showNeighbours(left, right) {
-    left.classList.remove('video__item_hidden');
-    right.classList.remove('video__item_hidden');
 }
 
 function hideAll() {
@@ -170,15 +164,13 @@ function moveToLeft(e) {
 }
 
 function activateFirst(e, last) {
-    e.classList.add('video__item_active', 'video__item_middle');
-    e.classList.remove('video__item_hidden');
+    activate(e);
     last.classList.add('video__item_left');
     last.classList.remove('video__item_hidden');
 }
 
 function activateLast(e, first) {
-    e.classList.add('video__item_active', 'video__item_middle');
-    e.classList.remove('video__item_hidden');
+    activate(e)
     first.classList.add('video__item_right');
     first.classList.remove('video__item_hidden');
 }
