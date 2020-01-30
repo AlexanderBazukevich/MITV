@@ -39,13 +39,13 @@ const videos = [
 const videoContainer = document.querySelector('.video');
 let videoHtml = "";
 
-let currentIndex = 1;
-let activeIndex = currentIndex;
-// console.log(activeIndex);
+let currentElementIndex = 1;
+let leftElementIndex = 0;
+let rightElementIndex = 2;
 
-videos.forEach ( (item) => {
+videos.forEach( (item) => {
     videoHtml += `
-    <div class = "video__item video__item_hidden" data_id = "${item.data_id}">
+    <div class = "video__item video__item_hidden" data_id="${item.data_id}">
         <div class="video__image"><img class="video__picture" src=${item.picture}></div>
         <h2 class="video__title video__title_small">${item.title}</h2>
         <p class="video__type">${item.type}</p>
@@ -58,89 +58,104 @@ videos.forEach ( (item) => {
 videoContainer.innerHTML += videoHtml;
 
 const videoItems = document.querySelectorAll('.video__item');
-activate(videoItems[currentIndex]);
-moveToLeft(videoItems[currentIndex - 1])
-moveToRight(videoItems[currentIndex + 1]);
+
+activate();
 
 videoContainer.addEventListener('click', (event) => {
-    hideAll()
-    getCurrentIndex(event);
-    getActiveIndex();
+    const selectedVideoItemIndex = getSelectedVideoItemIndex(event);
 
-    if (currentIndex > activeIndex) {
-        // console.log('Right click');
-        if (currentIndex == (videoItems.length - 1)) {
-            deactivate(videoItems[currentIndex - 1]);
-            activateLast(videoItems[currentIndex], videoItems[0]);
-            moveToLeft(videoItems[currentIndex - 1]);
-            return;
-        }
-
-        deactivate(videoItems[currentIndex - 1]);
-        activate(videoItems[currentIndex]);
-        moveToLeft(videoItems[currentIndex - 1]);
-        moveToRight(videoItems[currentIndex + 1]);
-
-    }   else if (currentIndex < activeIndex) {
-            // console.log('Left click');
-            if (currentIndex == 0) {
-                deactivate(videoItems[currentIndex + 1]);
-                activateFirst(videoItems[currentIndex], videoItems[videoItems.length - 1]);
-                moveToRight(videoItems[currentIndex + 1]);
-                return;
-            }
-
-            deactivate(videoItems[currentIndex + 1]);
-            activate(videoItems[currentIndex]);
-            moveToLeft(videoItems[currentIndex - 1]);
-            moveToRight(videoItems[currentIndex + 1]);
-
-        }   else {
-            activate(videoItems[currentIndex]);
-            moveToLeft(videoItems[currentIndex - 1]);
-            moveToRight(videoItems[currentIndex + 1]);
-                console.log('Center');
-            }
-});
-
-function getCurrentIndex(event) {
-    let e = event.target;
-
-    if (e.classList == 'video' || (e.parentElement.classList == 'video' && e.getAttribute('data_id') == null)) {
-        return;
+    if (selectedVideoItemIndex == undefined) {
+        return false;
     }
 
-    while (e.parentElement.classList != 'video') {
+    if (selectedVideoItemIndex == currentElementIndex) {
+        return false;
+    };
+
+    currentElementIndex = selectedVideoItemIndex;
+    hideAll();
+
+    if (currentElementIndex == videoItems.length - 1 && rightElementIndex != 1) {
+        setWideRightImage(videoItems[0]);
+    } else if (currentElementIndex == rightElementIndex) {
+        setWideRightImage(videoItems[currentElementIndex + 1]);
+    };
+
+    if (currentElementIndex == 0 && leftElementIndex != videoItems.length - 2) {
+        setWideLeftImage(videoItems[videoItems.length - 1]);
+        videoItems[videoItems.length - 1].classList.add('video__item_left');
+        videoItems[currentElementIndex + 1].classList.add('video__item_right');
+    } else if (currentElementIndex == leftElementIndex && rightElementIndex != 1) {
+        setWideLeftImage(videoItems[currentElementIndex - 1]);
+        videoItems[currentElementIndex - 1].classList.add('video__item_left');
+        videoItems[currentElementIndex + 1].classList.add('video__item_right');
+    } else if (currentElementIndex == leftElementIndex) {
+        setWideLeftImage(videoItems[currentElementIndex - 1]);
+        videoItems[currentElementIndex - 1].classList.add('video__item_left');
+        videoItems[0].classList.add('video__item_right');
+    };
+
+    leftElementIndex = currentElementIndex === 0 ? videoItems.length - 1 : currentElementIndex - 1;
+    rightElementIndex = currentElementIndex === videoItems.length - 1 ? 0 : currentElementIndex + 1;
+
+    activate();
+});
+
+function getSelectedVideoItemIndex(event) {
+    let e = event.target;
+    let index;
+
+    if (e == videoContainer || (e.parentElement == videoContainer && e.getAttribute('data_id') == null)) {
+        return index;
+    }
+
+    if (e.parentElement === videoContainer) {
+        index = Number(e.getAttribute('data_id'));
+    }
+
+    while (e.parentElement != videoContainer) {
 
         e = e.parentElement;
 
-        if (e.parentElement.classList == 'video') {
-            currentIndex = Number(e.getAttribute('data_id'));
-            return;
+        if (e.parentElement == videoContainer) {
+            index = Number(e.getAttribute('data_id'));
         }
     }
 
-    currentIndex = Number(e.getAttribute('data_id'));
-    return;
+    return index;
 }
 
-function getActiveIndex() {
-    videoItems.forEach( (item) => {
-        if (item.classList == 'video__item video__item_active') {
-            activeIndex = Number(item.getAttribute('data_id'));
-            return;
-        }
-    } )
-}
+// currentElementIndex = 1;
+// rightElementIndex = 2;
+// leftElementIndex = 0;
 
-function activate(e) {
-    e.classList.add('video__item_active', 'video__item_middle');
+// click(selectedIndex) {
+//     changeCurrentTo(selectedIndex)
+//     changeLeftTo()
+//     changeRightTo()
+// }
+
+// toggleMid(element) {
+//     element.classList.toggle("mid");
+// }
+
+// changeCurrentTo(index) {
+//     toggleMid(videoItems[currentElementIndex]);
+//     currentElementIndex = index;
+//     toggleMid(videoItems[currentElementIndex]);
+// }
+
+function activate() {
+    const e = videoItems[currentElementIndex];
+    e.classList.add('video__item_active', 'video__item_second');
     e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.add('video__type_red');
     e.querySelector('.video__button').classList.remove('video__button_hidden');
+    showLeft(videoItems[leftElementIndex]);
+    showRight(videoItems[rightElementIndex]);
 }
 
-function deactivate(e) {
+function show(e) {
     e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.remove('video__type_red');
     e.querySelector('.video__button').classList.add('video__button_hidden');
@@ -149,149 +164,26 @@ function deactivate(e) {
 function hideAll() {
     videoItems.forEach( video__item => {
         video__item.classList.add('video__item_hidden');
-        video__item.classList.remove('video__item_active', 'video__item_middle', 'video__item_right', 'video__item_left');
+        video__item.classList.remove('video__item_active', 'video__item_second', 'video__item_third', 'video__item_first', 'video__item_left', 'video__item_right');
+        video__item.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
     });
 }
 
-function moveToRight(e) {
-    deactivate(e);
-    e.classList.add('video__item_right');
+function showLeft(e) {
+    show(e);
+    videoItems[leftElementIndex].classList.add('video__item_first');
 }
 
-function moveToLeft(e) {
-    deactivate(e);
-    e.classList.add('video__item_left');
+function showRight(e) {
+    show(e);
+    videoItems[rightElementIndex].classList.add('video__item_third');
 }
 
-function activateFirst(e, last) {
-    activate(e);
-    last.classList.add('video__item_left');
-    last.classList.remove('video__item_hidden');
+function setWideLeftImage(e) {
+    e.querySelector('.video__image').classList.add('video__image_left', 'video__image_wide');
+    // e.classList.add('video__item_left');
 }
 
-function activateLast(e, first) {
-    activate(e)
-    first.classList.add('video__item_right');
-    first.classList.remove('video__item_hidden');
+function setWideRightImage(e) {
+    e.querySelector('.video__image').classList.add('video__image_wide');
 }
-
-// function hideVideos() {
-//     videoItems.forEach( video__item => {
-//         video__item.classList.add('video__item_hidden');
-//         video__item.classList.remove('video__item_right', 'video__item_left');
-//     });
-// }
-
-// function activateCurrent(e) {
-//     e.classList.add('video__item_active');
-//     e.classList.remove('video__item_hidden', 'video__item_left', 'video__item_right');
-//     e.classList.add('video__item_middle');
-//     e.querySelector('.button').classList.remove('video__button_hidden');
-//     e.querySelector('.video__type').classList.add('video__type_red');
-// }
-
-// function deactivateNext(e) {
-//     e.nextElementSibling.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
-//     e.nextElementSibling.classList.add('video__item_right');
-//     e.nextElementSibling.querySelector('.button').classList.add('video__button_hidden');
-//     e.nextElementSibling.querySelector('.video__type').classList.remove('video__type_red');
-// }
-
-// function deactivatePrevious(e) {
-//     e.previousElementSibling.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
-//     e.previousElementSibling.classList.add('video__item_left');
-//     e.previousElementSibling.querySelector('.button').classList.add('video__button_hidden');
-//     e.previousElementSibling.querySelector('.video__type').classList.remove('video__type_red');
-// }
-
-// function moveFirst(e) {
-//     e.firstElementChild.nextElementSibling.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
-//     e.firstElementChild.nextElementSibling.classList.add('video__item_right');
-//     e.firstElementChild.nextElementSibling.querySelector('.video__type').classList.remove('video__type_red');
-//     e.firstElementChild.nextElementSibling.querySelector('.button').classList.add('video__button_hidden');
-//     e.firstElementChild.nextElementSibling.classList.add('video__item_right');
-// }
-
-// function moveLast(e) {
-//     e.lastElementChild.classList.remove('video__item_hidden', 'video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right');
-//     e.lastElementChild.classList.add('video__item_left');
-//     e.lastElementChild.querySelector('.video__type').classList.remove('video__type_red');
-//     e.lastElementChild.querySelector('.button').classList.add('video__button_hidden');
-//     e.lastElementChild.classList.add('video__item_left');
-// }
-
-// function changeState() {
-
-//     if (this.classList == 'video__item video__item_right') {
-
-//         if (this.nextElementSibling == null) {
-//             this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//             this.parentNode.firstElementChild.nextElementSibling.querySelector('.video__image').classList.remove('video__image_left');
-//             this.parentNode.firstElementChild.nextElementSibling.querySelector('.video__image').classList.add('video__image_wide');
-//             this.parentNode.classList.remove('video_left');
-
-//             } else if (this.previousElementSibling.previousElementSibling == null) {
-//                 this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//                 this.nextElementSibling.querySelector('.video__image').classList.add('video__image_wide');
-//                 this.nextElementSibling.querySelector('.video__image').classList.remove('video__image_left');
-//                 this.parentNode.classList.remove('video_left'); 
-
-//                 } else {
-//                     this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//                     this.previousElementSibling.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//                     this.nextElementSibling.querySelector('.video__image').classList.remove('video__image_left');
-//                     this.nextElementSibling.querySelector('.video__image').classList.add('video__image_wide');
-//                     this.parentNode.classList.remove('video_left');
-//                 }
-//     }
-
-//     if (this.classList == 'video__item video__item_left') {
-
-//         if (this.previousElementSibling.previousElementSibling == null) {
-//             this.parentNode.firstElementChild.nextElementSibling.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//             this.parentNode.lastElementChild.querySelector('.video__image').classList.add('video__image_wide', 'video__image_left');
-//             this.parentNode.classList.add('video_left');
-
-//             } else if (this.nextElementSibling == null) {
-//                 this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//                 this.previousElementSibling.querySelector('.video__image').classList.add('video__image_wide', 'video__image_left');
-//                 this.parentNode.classList.add('video_left');
-
-//                 } else {
-//                     this.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//                     this.nextElementSibling.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
-//                     this.previousElementSibling.querySelector('.video__image').classList.add('video__image_wide', 'video__image_left');
-//                     this.parentNode.classList.add('video_left');
-//                 }
-//     }
-
-//     if (this.classList == 'video__item' || this.classList == 'video__item video__item_middle' || this.classList == 'video__item video__item_right' || this.classList == 'video__item video__item_left') {
-//         hideVideos();
-
-//         if (this.nextElementSibling == null) {
-
-//             activateCurrent(this);
-//             deactivatePrevious(this);
-
-//             moveFirst(this.parentNode);
-
-//             return;
-//         }
-
-//         if (this.previousElementSibling.previousElementSibling == null) {
-
-//             activateCurrent(this);
-//             deactivateNext(this);
-
-//             moveLast(this.parentNode);
-
-//             return;
-//         }
-
-//         activateCurrent(this);
-//         deactivatePrevious(this);
-//         deactivateNext(this)
-//     }
-// }
-
-// videoItems.forEach( video__item => {video__item.addEventListener('click', changeState)});
