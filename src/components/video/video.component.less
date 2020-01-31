@@ -27,6 +27,7 @@
         width: 430px;
         padding: 106px 0;
         box-sizing: border-box;
+        transition: transform 1s ease-in-out;
 
         &_hidden {
             display: none;
@@ -39,24 +40,20 @@
             background-color: #000000;
         }
 
-        &_first {
+        &_left {
             order: 1;
         }
 
-        &_second {
+        &_middle {
             order: 2;
         }
 
-        &_third {
+        &_right {
             order: 3;
         }
 
-        &_left {
-            margin-left: -150px;
-        }
-
-        &_right {
-            margin-right: 150px;
+        &_swipe {
+            transform: translateX(-150px);
         }
     }
 

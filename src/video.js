@@ -60,6 +60,7 @@ videoContainer.innerHTML += videoHtml;
 const videoItems = document.querySelectorAll('.video__item');
 
 activate();
+swipeToRight();
 
 videoContainer.addEventListener('click', (event) => {
     const selectedVideoItemIndex = getSelectedVideoItemIndex(event);
@@ -72,31 +73,20 @@ videoContainer.addEventListener('click', (event) => {
         return false;
     };
 
-    currentElementIndex = selectedVideoItemIndex;
+    leftElementIndex = selectedVideoItemIndex === 0 ? videoItems.length - 1 : selectedVideoItemIndex - 1;
+    rightElementIndex = selectedVideoItemIndex === videoItems.length - 1 ? 0 : selectedVideoItemIndex + 1;
+
     hideAll();
 
-    if (currentElementIndex == videoItems.length - 1 && rightElementIndex != 1) {
-        setWideRightImage(videoItems[0]);
-    } else if (currentElementIndex == rightElementIndex) {
-        setWideRightImage(videoItems[currentElementIndex + 1]);
-    };
+    if (currentElementIndex == rightElementIndex) {
+        swipeToLeft();
+    }
 
-    if (currentElementIndex == 0 && leftElementIndex != videoItems.length - 2) {
-        setWideLeftImage(videoItems[videoItems.length - 1]);
-        videoItems[videoItems.length - 1].classList.add('video__item_left');
-        videoItems[currentElementIndex + 1].classList.add('video__item_right');
-    } else if (currentElementIndex == leftElementIndex && rightElementIndex != 1) {
-        setWideLeftImage(videoItems[currentElementIndex - 1]);
-        videoItems[currentElementIndex - 1].classList.add('video__item_left');
-        videoItems[currentElementIndex + 1].classList.add('video__item_right');
-    } else if (currentElementIndex == leftElementIndex) {
-        setWideLeftImage(videoItems[currentElementIndex - 1]);
-        videoItems[currentElementIndex - 1].classList.add('video__item_left');
-        videoItems[0].classList.add('video__item_right');
-    };
+    if (currentElementIndex == leftElementIndex) {
+        swipeToRight();
+    }
 
-    leftElementIndex = currentElementIndex === 0 ? videoItems.length - 1 : currentElementIndex - 1;
-    rightElementIndex = currentElementIndex === videoItems.length - 1 ? 0 : currentElementIndex + 1;
+    currentElementIndex = selectedVideoItemIndex;
 
     activate();
 });
@@ -147,7 +137,7 @@ function getSelectedVideoItemIndex(event) {
 
 function activate() {
     const e = videoItems[currentElementIndex];
-    e.classList.add('video__item_active', 'video__item_second');
+    e.classList.add('video__item_active', 'video__item_middle');
     e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.add('video__type_red');
     e.querySelector('.video__button').classList.remove('video__button_hidden');
@@ -162,28 +152,31 @@ function show(e) {
 }
 
 function hideAll() {
-    videoItems.forEach( video__item => {
-        video__item.classList.add('video__item_hidden');
-        video__item.classList.remove('video__item_active', 'video__item_second', 'video__item_third', 'video__item_first', 'video__item_left', 'video__item_right');
-        video__item.querySelector('.video__image').classList.remove('video__image_wide', 'video__image_left');
+    videoItems.forEach( item => {
+        item.classList.add('video__item_hidden');
+        item.classList.remove('video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right', 'video__item_swipe');
+        item.querySelector('.video__image').classList.remove('video__image_left', 'video__image_wide');
     });
 }
 
 function showLeft(e) {
     show(e);
-    videoItems[leftElementIndex].classList.add('video__item_first');
+    videoItems[leftElementIndex].classList.add('video__item_left');
 }
 
 function showRight(e) {
     show(e);
-    videoItems[rightElementIndex].classList.add('video__item_third');
+    videoItems[rightElementIndex].classList.add('video__item_right');
 }
 
-function setWideLeftImage(e) {
-    e.querySelector('.video__image').classList.add('video__image_left', 'video__image_wide');
-    // e.classList.add('video__item_left');
+function swipeToLeft() {
+    videoItems[leftElementIndex].querySelector('.video__image').classList.add('video__image_left', 'video__image_wide');
+    
+    videoItems.forEach( item => {
+        item.classList.add('video__item_swipe');
+    });
 }
 
-function setWideRightImage(e) {
-    e.querySelector('.video__image').classList.add('video__image_wide');
+function swipeToRight() {
+    videoItems[rightElementIndex].querySelector('.video__image').classList.add('video__image_wide');
 }
