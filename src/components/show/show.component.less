@@ -1,12 +1,16 @@
 .show {
+    position: relative;
     display: block;
     height: 606px;
     width: calc((100% - 20px) / 2);
     margin: 5px;
     text-align: center;
-    box-sizing: border-box;
     background-color: #000000;
     overflow: hidden;
+
+    &_hidden {
+        display: none;
+    }
 
     &_grafite {
         position: relative;
@@ -19,21 +23,27 @@
         width: 100%;
     }
 
+    &_active {
+        order: 2;
+    }
+
     &_inactive {
-        position: relative;
         height: 566px;
         width: calc((50% + 200px) / 2);
 
         &_left {
             margin: 0 5px 0 -100px;
+            order: 1;
         }
 
         &_right {
             margin: 0 -100px 0 5px;
+            order: 3;
         }
     }
 
     &__arrow {
+        cursor: pointer;
         position: absolute;
         top: 0;
         right: 0;
@@ -42,10 +52,9 @@
         padding-top: 240px;
         color: #ffffff;
         font-size: 50px;
-            text-align: center;
+        text-align: center;
         background-color: rgba(230, 7, 7, 0.5);
         opacity: 0;
-        transition: transform .5s;
 
         &:hover {
             opacity: 1;
@@ -56,6 +65,12 @@
         display: flex;
         justify-content: center;
         height: 100%;
+        z-index: 1;
+
+        &_center {
+            position: absolute;
+            top: 0;
+        }
     }
 
     &__picture {
@@ -109,12 +124,24 @@
 
     &__title,
     &__description {
+        position: relative;
         color: #ffffff;
+        text-decoration: none;
+        z-index: 2;
+
+        &_hidden {
+            display: none;
+        }
     }
 
     &__title {
         margin: 100px 0 0 0;
         font-size: 72px;
+        font-weight: bold;
+
+        &_center {
+            display: block;
+        }
 
         &_big {
             position: relative;

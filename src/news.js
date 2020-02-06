@@ -29,7 +29,7 @@ const topics = [
     }
 ]
 
-const container = document.querySelector('.news__wrapper');
+const newsContainer = document.querySelector('.news__wrapper');
 let html = "";
 topics.forEach( (item) => {
     html += `
@@ -46,4 +46,4 @@ topics.forEach( (item) => {
     `
 })
 
-container.innerHTML = html;
+newsContainer.innerHTML = html;

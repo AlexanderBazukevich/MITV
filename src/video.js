@@ -67,7 +67,7 @@ videoContainer.addEventListener('click', (event) => {
 
     if (selectedVideoItemIndex == undefined) {
         return false;
-    }
+    };
 
     if (selectedVideoItemIndex == currentElementIndex) {
         return false;
