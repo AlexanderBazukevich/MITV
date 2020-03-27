@@ -1,11 +1,17 @@
 .video {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 0 0 50px 0;
-    width: 100%;
-    padding: 0 100px 0 250px;
+    // display: flex;
+    // flex-wrap: wrap;
+    // justify-content: space-between;
+    margin: 0 100px 50px 280px;
+    // padding: 0 0 0 100px;
+    width: calc(100% - 430px);
     box-sizing: border-box;
+    font-size: 0;
+    overflow: hidden;
+
+    &__container {
+        width: max-content;
+    }
 
     &_left {
         padding: 0 250px 0 100px;
@@ -25,38 +31,42 @@
         display: inline-flex;
         flex-direction: column;
         width: 430px;
+        margin: 0 10px;
         padding: 106px 0;
-        box-sizing: border-box;
-        transition: transform 1s ease-in-out;
+        // box-sizing: border-box;
+        font-size: 1rem;
+        vertical-align: top;
+        // transition: transform 1s ease-in-out;
 
         &_hidden {
-            display: none;
+            // display: none;
         }
 
         &_active {
             padding: 106px 70px;
-            width: 570px;
+            // width: 570px;
             color: #ffffff;
             background-color: #000000;
         }
 
-        &_left {
-            cursor: pointer;
-            order: 1;
-        }
+        // &_left {
+        //     cursor: pointer;
+        //     order: 1;
+        // }
 
-        &_middle {
-            order: 2;
-        }
+        // &_middle {
+        //     order: 2;
+        // }
 
-        &_right {
-            cursor: pointer;
-            order: 3;
-        }
+        // &_right {
+        //     cursor: pointer;
+        //     order: 3;
+        // }
 
-        &_swipe {
-            transform: translateX(-150px);
-        }
+        // &_swipe {
+        //     // transform: translateX(-150px);
+        //     margin-left: -150px;
+        // }
     }
 
     &__image {
@@ -65,7 +75,7 @@
         overflow: hidden;
 
         &_wide {
-            width: 530px;
+            // width: 530px;
         }
 
         &_left {

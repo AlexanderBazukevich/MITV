@@ -36,7 +36,7 @@ const videos = [
     }
 ]
 
-const videoContainer = document.querySelector('.video');
+const videoContainer = document.querySelector('.video__container');
 let videoHtml = "";
 
 let currentElementIndex = 1;
@@ -137,7 +137,7 @@ function getSelectedVideoItemIndex(event) {
 
 function activate() {
     const e = videoItems[currentElementIndex];
-    e.classList.add('video__item_active', 'video__item_middle');
+    e.classList.add('video__item_active');
     e.classList.remove('video__item_hidden');
     e.querySelector('.video__type').classList.add('video__type_red');
     e.querySelector('.video__button').classList.remove('video__button_hidden');
@@ -154,27 +154,27 @@ function show(e) {
 function hideAll() {
     videoItems.forEach( item => {
         item.classList.add('video__item_hidden');
-        item.classList.remove('video__item_active', 'video__item_middle', 'video__item_left', 'video__item_right', 'video__item_swipe');
+        item.classList.remove('video__item_active', 'video__item_swipe');
         item.querySelector('.video__image').classList.remove('video__image_left', 'video__image_wide');
     });
 }
 
 function showLeft(e) {
     show(e);
-    videoItems[leftElementIndex].classList.add('video__item_left');
+    // videoItems[leftElementIndex].classList.add('video__item_left');
 }
 
 function showRight(e) {
     show(e);
-    videoItems[rightElementIndex].classList.add('video__item_right');
+    // videoItems[rightElementIndex].classList.add('video__item_right');
 }
 
 function swipeToLeft() {
     videoItems[leftElementIndex].querySelector('.video__image').classList.add('video__image_left', 'video__image_wide');
     
-    videoItems.forEach( item => {
-        item.classList.add('video__item_swipe');
-    });
+    // videoItems.forEach( item => {
+    //     item.classList.add('video__item_swipe');
+    // });
 }
 
 function swipeToRight() {

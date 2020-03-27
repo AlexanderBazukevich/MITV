@@ -1,4 +1,4 @@
-const channels = [
+const shows = [
     {
         data_id: "0",
         title: "BMX Challenges",
@@ -37,68 +37,72 @@ const channels = [
     },
 ]
 
-const channelsContainer = document.querySelector('.channels_movable');
-let channelHtml = "";
+const sliderContainer = document.querySelector('.slider__container');
+let sliderHtml = "";
 
-let currentChannelElementIndex = 1;
-let leftChannelElementIndex = 0;
-let rightChannelElementIndex = 2;
-
-channels.forEach( (item) => {
-    channelHtml += `
-    <div class="show show_hidden" data_id="${item.data_id}">
+shows.forEach( (item) => {
+    sliderHtml += `
+    <div class="show show_inactive" data_id="${item.data_id}">
         <div class="show__arrow"></div>
-        <a class="show__title show__title_hidden" href="#">${item.title}</a>
-        <p class="show__description show__description_hidden">${item.description}</p>
         <div class="show__image"><img class="show__picture" src="${item.picture}"></div>
     </div>
     `
 })
 
-channelsContainer.innerHTML += channelHtml;
+/* <div class="show__arrow"></div>
+<a class="show__title show__title_hidden" href="#">${item.title}</a>
+<p class="show__description show__description_hidden">${item.description}</p> */
 
-const channelItems = channelsContainer.querySelectorAll('.show');
+sliderContainer.innerHTML += sliderHtml;
 
-activateChannels();
+let currentIndex = 0;
+let activeIndex = 1;
+const showItems = sliderContainer.querySelectorAll('.show');
+let arrowElem;
+let lastIndex = showItems.length - 1;
 
-channelsContainer.addEventListener('click', (event) => {
-    const selectedChannelItemIndex = getSelectedChannelItemIndex(event);
+sliderContainer.insertBefore(showItems[lastIndex], showItems[currentIndex]);
+currentIndex = lastIndex;
+lastIndex--;
+showSelected();
 
-    if (selectedChannelItemIndex == undefined) {
-        return false;
-    };
+function clickEventHandler() {
+    const selectedShowIndex = getSelectedShowIndex(event);
 
-    if (selectedChannelItemIndex == currentChannelElementIndex) {
-        return false;
-    };
+    if (selectedShowIndex <= activeIndex) {
+        if (selectedShowIndex == 0 && activeIndex == showItems.length - 1) {
+            swipeLeft();
+            return;
+        }
+        swipeRight();
+    }
 
-    leftChannelElementIndex = selectedChannelItemIndex === 0 ? channelItems.length - 1 : selectedChannelItemIndex - 1;
-    rightChannelElementIndex = selectedChannelItemIndex === channelItems.length - 1 ? 0 : selectedChannelItemIndex + 1;
+    if (selectedShowIndex > activeIndex) {
+        if (selectedShowIndex == showItems.length - 1 && activeIndex == 0) {
+            swipeRight();
+            return;
+        }
+        swipeLeft();
+    }
+}
 
-    hideAllChannels();
-
-    currentChannelElementIndex = selectedChannelItemIndex;
-
-    activateChannels();
-});
-
-function getSelectedChannelItemIndex(event) {
+function getSelectedShowIndex(event) {
     let e = event.target;
     let index;
 
-    if (e == channelsContainer || (e.parentElement == channelsContainer && e.getAttribute('data_id') == null)) {
+    if (e == sliderContainer || (e.parentElement == sliderContainer && e.getAttribute('data_id') == null)) {
         return index;
     }
 
-    if (e.parentElement === channelsContainer) {
+    if (e.parentElement === sliderContainer) {
         index = Number(e.getAttribute('data_id'));
     }
 
-    while (e.parentElement != channelsContainer) {
+    while (e.parentElement != sliderContainer) {
 
         e = e.parentElement;
 
-        if (e.parentElement == channelsContainer) {
+        if (e.parentElement == sliderContainer) {
             index = Number(e.getAttribute('data_id'));
         }
     }
@@ -106,38 +110,78 @@ function getSelectedChannelItemIndex(event) {
     return index;
 }
 
-function hideAllChannels() {
-    channelItems.forEach( item => {
-        item.classList.add('show_hidden');
-        item.classList.remove('show_active', 'show_inactive', 'show_inactive_left', 'show_inactive_right');
-        item.querySelectorAll('.show__arrow').innerHTML = '';
-        item.querySelector('.show__title').classList.remove('show__title_center');
-        item.querySelector('.show__image').classList.remove('show__image_center');
-        item.querySelector('.show__title').classList.add('show__title_hidden');
-        item.querySelector('.show__description').classList.add('show__description_hidden');
-    });
+function showSelected() {
+    arrowElem = showItems[activeIndex].querySelector('.show__arrow');
+    showItems[currentIndex].classList.add('show_inactive_left');
+    showItems[activeIndex].classList.remove('show_inactive');
+    showItems[activeIndex].removeChild(arrowElem);
+    sliderContainer.addEventListener('click', clickEventHandler);
 }
 
-function activateChannels() {
-    const e = channelItems[currentChannelElementIndex];
-    e.classList.remove('show_hidden');
-    e.classList.add('show_active');
-    e.querySelector('.show__title').classList.add('show__title_center');
-    e.querySelector('.show__image').classList.add('show__image_center');
-    e.querySelector('.show__title').classList.remove('show__title_hidden');
-    e.querySelector('.show__description').classList.remove('show__description_hidden');
-    showLeftChannel(channelItems[leftChannelElementIndex]);
-    showRightChannel(channelItems[rightChannelElementIndex]);
+function swipeLeft() {
+
+    sliderContainer.removeEventListener('click', clickEventHandler);
+
+    sliderContainer.appendChild(showItems[currentIndex]);
+    showItems[activeIndex].classList.add('show_inactive');
+    showItems[activeIndex].insertBefore(arrowElem, showItems[activeIndex].firstChild)
+    // arrowElem.innerHTML = '<i class="fas fa-arrow-left"></i>';
+    showItems[currentIndex].classList.remove('show_inactive_left');
+    lastIndex = currentIndex;
+
+    if (currentIndex != showItems.length - 1) {
+        currentIndex++;
+    } else {
+        currentIndex = 0;
+    }
+
+    if (activeIndex != showItems.length - 1) {
+        activeIndex++;
+    } else {
+        activeIndex = 0;
+    }
+
+    // let animation = sliderItems[currentIndex].animate([
+    //     {marginLeft: `0px`},
+    //     {marginLeft: `-${elementWidth}px`}
+    // ], 1000);
+    // animation.onfinish = () => {
+    //     slider.addEventListener('click', clickEventHandler);
+    //     document.addEventListener('keydown', keyEventHandler);
+    // }
+    showSelected();
 }
 
-function showLeftChannel(e) {
-    e.classList.add('show_inactive', 'show_inactive_left');
-    e.querySelector('.show__arrow').innerHTML = '<i class="fas fa-arrow-left"></i>';
-    e.classList.remove('show_hidden');
-}
+function swipeRight() {
 
-function showRightChannel(e) {
-    e.classList.add('show_inactive', 'show_inactive_right');
-    e.querySelector('.show__arrow').innerHTML = '<i class="fas fa-arrow-right"></i>';
-    e.classList.remove('show_hidden');
+    sliderContainer.removeEventListener('click', clickEventHandler);
+
+    sliderContainer.insertBefore(showItems[lastIndex], showItems[currentIndex]);
+    showItems[activeIndex].classList.add('show_inactive');
+    showItems[activeIndex].insertBefore(arrowElem, showItems[activeIndex].firstChild)
+    // arrowElem.innerHTML = '<i class="fas fa-arrow-right"></i>';
+    showItems[currentIndex].classList.remove('show_inactive_left');
+    currentIndex = lastIndex;
+
+    if (lastIndex != 0) {
+        lastIndex--;
+    } else {
+        lastIndex = showItems.length - 1;
+    }
+
+    if (activeIndex != 0) {
+        activeIndex--;
+    } else {
+        activeIndex = showItems.length - 1;
+    }
+
+    // let animation = sliderItems[currentIndex].animate([
+    //     {marginRight: `-${elementWidth}px`},
+    //     {marginRight: `0px`}
+    // ], 1000);
+    // animation.onfinish = () => {
+    //     slider.addEventListener('click', clickEventHandler);
+    //     document.addEventListener('keydown', keyEventHandler);
+    // }
+    showSelected();
 }
