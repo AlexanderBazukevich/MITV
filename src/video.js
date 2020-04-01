@@ -39,13 +39,9 @@ const videos = [
 const videoContainer = document.querySelector('.video__container');
 let videoHtml = "";
 
-let currentElementIndex = 1;
-let leftElementIndex = 0;
-let rightElementIndex = 2;
-
 videos.forEach( (item) => {
     videoHtml += `
-    <div class = "video__item video__item_hidden" data_id="${item.data_id}">
+    <div class = "video__item" data_id="${item.data_id}">
         <div class="video__image"><img class="video__picture" src=${item.picture}></div>
         <h2 class="video__title video__title_small">${item.title}</h2>
         <p class="video__type">${item.type}</p>
@@ -57,39 +53,42 @@ videos.forEach( (item) => {
 
 videoContainer.innerHTML += videoHtml;
 
+let currentVideoIndex = 0;
+let activeVideoIndex = 1;
 const videoItems = document.querySelectorAll('.video__item');
+let lastVideoIndex = videoItems.length - 1;
 
-activate();
-swipeToRight();
+videoContainer.insertBefore(videoItems[lastVideoIndex], videoItems[currentVideoIndex]);
+currentVideoIndex = lastVideoIndex;
+lastVideoIndex--;
+activateVideo();
+videoItems[currentVideoIndex].classList.add('video__item_left');
+videoContainer.addEventListener('click', clickVideoEventHandler);
 
-videoContainer.addEventListener('click', (event) => {
-    const selectedVideoItemIndex = getSelectedVideoItemIndex(event);
+function clickVideoEventHandler() {
 
-    if (selectedVideoItemIndex == undefined) {
+    const selectedVideoIndex = getSelectedVideoItemIndex(event);
+
+    if (selectedVideoIndex == activeVideoIndex) {
         return false;
-    };
-
-    if (selectedVideoItemIndex == currentElementIndex) {
-        return false;
-    };
-
-    leftElementIndex = selectedVideoItemIndex === 0 ? videoItems.length - 1 : selectedVideoItemIndex - 1;
-    rightElementIndex = selectedVideoItemIndex === videoItems.length - 1 ? 0 : selectedVideoItemIndex + 1;
-
-    hideAll();
-
-    if (currentElementIndex == rightElementIndex) {
-        swipeToLeft();
     }
 
-    if (currentElementIndex == leftElementIndex) {
-        swipeToRight();
+    if (selectedVideoIndex <= activeVideoIndex) {
+        if (selectedVideoIndex == 0 && activeVideoIndex == videoItems.length - 1) {
+            swipeVideoLeft();
+            return;
+        }
+        swipeVideoRight();
     }
 
-    currentElementIndex = selectedVideoItemIndex;
-
-    activate();
-});
+    if (selectedVideoIndex > activeVideoIndex) {
+        if (selectedVideoIndex == videoItems.length - 1 && activeVideoIndex == 0) {
+            swipeVideoRight();
+            return;
+        }
+        swipeVideoLeft();
+    }
+}
 
 function getSelectedVideoItemIndex(event) {
     let e = event.target;
@@ -115,7 +114,7 @@ function getSelectedVideoItemIndex(event) {
     return index;
 }
 
-// currentElementIndex = 1;
+// activeVideoIndex = 1;
 // rightElementIndex = 2;
 // leftElementIndex = 0;
 
@@ -130,53 +129,70 @@ function getSelectedVideoItemIndex(event) {
 // }
 
 // changeCurrentTo(index) {
-//     toggleMid(videoItems[currentElementIndex]);
-//     currentElementIndex = index;
-//     toggleMid(videoItems[currentElementIndex]);
+//     toggleMid(videoItems[activeVideoIndex]);
+//     activeVideoIndex = index;
+//     toggleMid(videoItems[activeVideoIndex]);
 // }
 
-function activate() {
-    const e = videoItems[currentElementIndex];
-    e.classList.add('video__item_active');
-    e.classList.remove('video__item_hidden');
-    e.querySelector('.video__type').classList.add('video__type_red');
-    e.querySelector('.video__button').classList.remove('video__button_hidden');
-    showLeft(videoItems[leftElementIndex]);
-    showRight(videoItems[rightElementIndex]);
+function activateVideo() {
+    videoItems[activeVideoIndex].classList.add('video__item_active');
+    videoItems[activeVideoIndex].querySelector('.video__type').classList.add('video__type_red');
+    videoItems[activeVideoIndex].querySelector('.video__button').classList.remove('video__button_hidden');
+}
+function deactivateVideo() {
+    videoItems[activeVideoIndex].classList.remove('video__item_active');
+    videoItems[activeVideoIndex].querySelector('.video__type').classList.remove('video__type_red');
+    videoItems[activeVideoIndex].querySelector('.video__button').classList.add('video__button_hidden');
+}
+function swipeVideoLeft() {
+
+    videoContainer.appendChild(videoItems[currentVideoIndex]);
+
+    videoItems[currentVideoIndex].classList.remove('video__item_left');
+    deactivateVideo();
+
+    // videoItems[activeVideoIndex].querySelector('.video__image').classList.add('video__image_left', 'video__image_wide');
+    // videoItems[currentVideoIndex].querySelector('.video__image').classList.remove('video__image_left', 'video__image_wide');
+    lastVideoIndex = currentVideoIndex;
+
+    if (currentVideoIndex != videoItems.length - 1) {
+        currentVideoIndex++;
+    } else {
+        currentVideoIndex = 0;
+    }
+
+    if (activeVideoIndex != videoItems.length - 1) {
+        activeVideoIndex++;
+    } else {
+        activeVideoIndex = 0;
+    }
+
+    videoItems[currentVideoIndex].classList.add('video__item_left');
+    videoItems[currentVideoIndex].addEventListener('transitionend', activateVideo);
 }
 
-function show(e) {
-    e.classList.remove('video__item_hidden');
-    e.querySelector('.video__type').classList.remove('video__type_red');
-    e.querySelector('.video__button').classList.add('video__button_hidden');
-}
+function swipeVideoRight() {
 
-function hideAll() {
-    videoItems.forEach( item => {
-        item.classList.add('video__item_hidden');
-        item.classList.remove('video__item_active', 'video__item_swipe');
-        item.querySelector('.video__image').classList.remove('video__image_left', 'video__image_wide');
-    });
-}
+    videoContainer.insertBefore(videoItems[lastVideoIndex], videoItems[currentVideoIndex]);
 
-function showLeft(e) {
-    show(e);
-    // videoItems[leftElementIndex].classList.add('video__item_left');
-}
+    videoItems[lastVideoIndex].classList.add('video__item_left');
+    videoItems[currentVideoIndex].classList.remove('video__item_left');
+    deactivateVideo();
+    videoItems[currentVideoIndex].addEventListener('transitionend', activateVideo);
+    // showItems[activeVideoIndex].querySelector('.video__image').classList.remove('video__image_left', 'video__image_wide');
+    // showItems[currentVideoIndex].querySelector('.video__image').classList.add('video__image_wide');
+    currentVideoIndex = lastVideoIndex;
 
-function showRight(e) {
-    show(e);
-    // videoItems[rightElementIndex].classList.add('video__item_right');
-}
+    if (lastVideoIndex != 0) {
+        lastVideoIndex--;
+    } else {
+        lastVideoIndex = videoItems.length - 1;
+    }
 
-function swipeToLeft() {
-    videoItems[leftElementIndex].querySelector('.video__image').classList.add('video__image_left', 'video__image_wide');
-    
-    // videoItems.forEach( item => {
-    //     item.classList.add('video__item_swipe');
-    // });
-}
+    if (activeVideoIndex != 0) {
+        activeVideoIndex--;
+    } else {
+        activeVideoIndex = videoItems.length - 1;
+    }
 
-function swipeToRight() {
-    videoItems[rightElementIndex].querySelector('.video__image').classList.add('video__image_wide');
 }

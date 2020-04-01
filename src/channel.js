@@ -55,34 +55,39 @@ shows.forEach( (item) => {
 
 sliderContainer.innerHTML += sliderHtml;
 
-let currentIndex = 0;
-let activeIndex = 1;
+let currentShowIndex = 0;
+let activeShowIndex = 1;
 const showItems = sliderContainer.querySelectorAll('.show');
 let arrowElem;
-let lastIndex = showItems.length - 1;
+let lastShowIndex = showItems.length - 1;
 
-sliderContainer.insertBefore(showItems[lastIndex], showItems[currentIndex]);
-currentIndex = lastIndex;
-lastIndex--;
-showSelected();
+sliderContainer.insertBefore(showItems[lastShowIndex], showItems[currentShowIndex]);
+currentShowIndex = lastShowIndex;
+lastShowIndex--;
+showSelectedShow();
+sliderContainer.addEventListener('click', clickShowEventHandler);
 
-function clickEventHandler() {
+function clickShowEventHandler() {
     const selectedShowIndex = getSelectedShowIndex(event);
 
-    if (selectedShowIndex <= activeIndex) {
-        if (selectedShowIndex == 0 && activeIndex == showItems.length - 1) {
-            swipeLeft();
-            return;
-        }
-        swipeRight();
+    if (selectedShowIndex == activeShowIndex) {
+        return false;
     }
 
-    if (selectedShowIndex > activeIndex) {
-        if (selectedShowIndex == showItems.length - 1 && activeIndex == 0) {
-            swipeRight();
+    if (selectedShowIndex <= activeShowIndex) {
+        if (selectedShowIndex == 0 && activeShowIndex == showItems.length - 1) {
+            swipeShowLeft();
             return;
         }
-        swipeLeft();
+        swipeShowRight();
+    }
+
+    if (selectedShowIndex > activeShowIndex) {
+        if (selectedShowIndex == showItems.length - 1 && activeShowIndex == 0) {
+            swipeShowRight();
+            return;
+        }
+        swipeShowLeft();
     }
 }
 
@@ -110,78 +115,84 @@ function getSelectedShowIndex(event) {
     return index;
 }
 
-function showSelected() {
-    arrowElem = showItems[activeIndex].querySelector('.show__arrow');
-    showItems[currentIndex].classList.add('show_inactive_left');
-    showItems[activeIndex].classList.remove('show_inactive');
-    showItems[activeIndex].removeChild(arrowElem);
-    sliderContainer.addEventListener('click', clickEventHandler);
+function showSelectedShow() {
+    arrowElem = showItems[activeShowIndex].querySelector('.show__arrow');
+    showItems[currentShowIndex].classList.add('show_inactive_left');
+    showItems[activeShowIndex].classList.remove('show_inactive');
+    showItems[activeShowIndex].removeChild(arrowElem);
+    // sliderContainer.addEventListener('transitionend', () => {
+    //     console.log('Start!');
+    //     sliderContainer.addEventListener('click', clickShowEventHandler);
+    // })
 }
 
-function swipeLeft() {
+function swipeShowLeft() {
 
-    sliderContainer.removeEventListener('click', clickEventHandler);
-
-    sliderContainer.appendChild(showItems[currentIndex]);
-    showItems[activeIndex].classList.add('show_inactive');
-    showItems[activeIndex].insertBefore(arrowElem, showItems[activeIndex].firstChild)
+    // sliderContainer.removeEventListener('click', clickShowEventHandler);
+    // console.log('Stop!');
+    sliderContainer.appendChild(showItems[currentShowIndex]);
+    showItems[activeShowIndex].classList.add('show_inactive');
+    showItems[activeShowIndex].insertBefore(arrowElem, showItems[activeShowIndex].firstChild)
     // arrowElem.innerHTML = '<i class="fas fa-arrow-left"></i>';
-    showItems[currentIndex].classList.remove('show_inactive_left');
-    lastIndex = currentIndex;
+    showItems[currentShowIndex].classList.remove('show_inactive_left');
+    lastShowIndex = currentShowIndex;
 
-    if (currentIndex != showItems.length - 1) {
-        currentIndex++;
+    if (currentShowIndex != showItems.length - 1) {
+        currentShowIndex++;
     } else {
-        currentIndex = 0;
+        currentShowIndex = 0;
     }
 
-    if (activeIndex != showItems.length - 1) {
-        activeIndex++;
+    if (activeShowIndex != showItems.length - 1) {
+        activeShowIndex++;
     } else {
-        activeIndex = 0;
+        activeShowIndex = 0;
     }
 
-    // let animation = sliderItems[currentIndex].animate([
+    // let animation = sliderItems[currentShowIndex].animate([
     //     {marginLeft: `0px`},
     //     {marginLeft: `-${elementWidth}px`}
     // ], 1000);
     // animation.onfinish = () => {
-    //     slider.addEventListener('click', clickEventHandler);
+    //     slider.addEventListener('click', clickShowEventHandler);
     //     document.addEventListener('keydown', keyEventHandler);
     // }
-    showSelected();
+    showSelectedShow();
+    // sliderContainer.addEventListener('click', clickShowEventHandler);
 }
 
-function swipeRight() {
+function swipeShowRight() {
 
-    sliderContainer.removeEventListener('click', clickEventHandler);
+    // sliderContainer.removeEventListener('click', clickShowEventHandler);
+    // console.log('Stop!');
 
-    sliderContainer.insertBefore(showItems[lastIndex], showItems[currentIndex]);
-    showItems[activeIndex].classList.add('show_inactive');
-    showItems[activeIndex].insertBefore(arrowElem, showItems[activeIndex].firstChild)
+    sliderContainer.insertBefore(showItems[lastShowIndex], showItems[currentShowIndex]);
+    showItems[activeShowIndex].classList.add('show_inactive');
+    showItems[activeShowIndex].insertBefore(arrowElem, showItems[activeShowIndex].firstChild)
     // arrowElem.innerHTML = '<i class="fas fa-arrow-right"></i>';
-    showItems[currentIndex].classList.remove('show_inactive_left');
-    currentIndex = lastIndex;
+    showItems[currentShowIndex].classList.remove('show_inactive_left');
+    currentShowIndex = lastShowIndex;
 
-    if (lastIndex != 0) {
-        lastIndex--;
+    if (lastShowIndex != 0) {
+        lastShowIndex--;
     } else {
-        lastIndex = showItems.length - 1;
+        lastShowIndex = showItems.length - 1;
     }
 
-    if (activeIndex != 0) {
-        activeIndex--;
+    if (activeShowIndex != 0) {
+        activeShowIndex--;
     } else {
-        activeIndex = showItems.length - 1;
+        activeShowIndex = showItems.length - 1;
     }
 
-    // let animation = sliderItems[currentIndex].animate([
+    // let animation = sliderItems[currentShowIndex].animate([
     //     {marginRight: `-${elementWidth}px`},
     //     {marginRight: `0px`}
     // ], 1000);
     // animation.onfinish = () => {
-    //     slider.addEventListener('click', clickEventHandler);
+    //     slider.addEventListener('click', clickShowEventHandler);
     //     document.addEventListener('keydown', keyEventHandler);
     // }
-    showSelected();
+    showSelectedShow();
+    // sliderContainer.addEventListener('click', clickShowEventHandler);
 }

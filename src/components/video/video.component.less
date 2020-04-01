@@ -1,9 +1,7 @@
 .video {
-    // display: flex;
-    // flex-wrap: wrap;
-    // justify-content: space-between;
+    display: block;
+    white-space: nowrap;
     margin: 0 100px 50px 280px;
-    // padding: 0 0 0 100px;
     width: calc(100% - 430px);
     box-sizing: border-box;
     font-size: 0;
@@ -28,18 +26,18 @@
     }
 
     &__item {
-        display: inline-flex;
-        flex-direction: column;
+        display: inline-block;
+        white-space: initial;
+        vertical-align: top;
         width: 430px;
         margin: 0 10px;
         padding: 106px 0;
-        // box-sizing: border-box;
         font-size: 1rem;
-        vertical-align: top;
-        // transition: transform 1s ease-in-out;
+        transition: margin-left .5s ease-in-out;
 
-        &_hidden {
-            // display: none;
+        &_left {
+            margin-left: -430px;
+            // width: 0;
         }
 
         &_active {
@@ -49,24 +47,6 @@
             background-color: #000000;
         }
 
-        // &_left {
-        //     cursor: pointer;
-        //     order: 1;
-        // }
-
-        // &_middle {
-        //     order: 2;
-        // }
-
-        // &_right {
-        //     cursor: pointer;
-        //     order: 3;
-        // }
-
-        // &_swipe {
-        //     // transform: translateX(-150px);
-        //     margin-left: -150px;
-        // }
     }
 
     &__image {
@@ -81,7 +61,6 @@
         &_left {
             align-self: flex-end;
         }
-
     }
 
     &__picture {
