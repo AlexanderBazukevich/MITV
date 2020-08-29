@@ -1,0 +1,33 @@
+.article {
+    width: 431px;
+    padding-left: 250px;
+
+    &__title {
+        position: relative;
+        margin: 0;
+        padding-top: 240px;
+        font-size: 100px;
+
+        &:after {
+            right: 0;
+            bottom: 45px;
+            height: 16px;
+            width: 95px;
+            background-color: #f73746;
+
+            //mixins
+            .dash();
+        }
+    }
+
+    &__text {
+        font-size: 18px;
+    }
+
+    &__button {
+        padding: 25px 0;
+        width: 100%;
+    }
+}
+
+

@@ -1,0 +1,27 @@
+{
+  "name": "mitv",
+  "version": "1.0.0",
+  "description": "Web site for television company",
+  "main": "index.html",
+  "scripts": {
+    "build": "lessc src/styles.less dist/styles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexanderBazukevich/MITV.git"
+  },
+  "keywords": [
+    "html",
+    "css",
+    "less"
+  ],
+  "author": "Alexander Bazukevich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexanderBazukevich/MITV/issues"
+  },
+  "homepage": "https://github.com/AlexanderBazukevich/MITV#readme",
+  "devDependencies": {
+    "less": "^3.10.3"
+  }
+}

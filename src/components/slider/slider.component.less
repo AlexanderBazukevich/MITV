@@ -1,0 +1,43 @@
+.slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 100px;
+    width: calc(100% - 200px);
+
+    &__box {
+        position: absolute;
+        margin: 50px auto;
+        height: 700px;
+        width: calc(100% - 200px);
+        background-color: #ffffff;
+        box-shadow: 0 10px 100px #d3d3d3;
+        box-sizing: border-box;
+    }
+
+    &__container {
+        display: block;
+        white-space: nowrap;
+        height: 616px;
+        overflow: hidden;
+    }
+
+    &__title {
+        width: 54%;
+        color: #fff;
+        font-size: 383px;
+        font-weight: bold;
+        line-height: 1;
+        letter-spacing: 0.06em;
+
+        &_front {
+            z-index: 1;
+        }
+    }
+
+    &__image {
+        position: absolute;
+        left: -100px;
+    }
+}
